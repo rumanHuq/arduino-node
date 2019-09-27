@@ -1,0 +1,34 @@
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "node": "12"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/transform-typescript",
+    "dynamic-import-node",
+    "@babel/syntax-dynamic-import",
+    [
+      "@babel/transform-runtime",
+      {
+        "regenerator": true,
+      }
+    ],
+    [
+      "module-resolver",
+      {
+        "root": [
+          "./"
+        ],
+        "alias": {
+          "@": "./"
+        }
+      }
+    ]
+  ]
+}

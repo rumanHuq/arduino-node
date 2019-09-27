@@ -1,24 +1,32 @@
-const { Pin } = require("johnny-five");
-const RGB = [11, 13, 12];
+import { Board } from "johnny-five";
+import { Pin } from "./main";
+
+const RGB = [10, 12, 11];
 const [red, green, blue] = RGB;
-module.exports = function rgbLight(board) {
+
+/**
+ * @description
+ * @export
+ * @param {Board} board
+ */
+export default function rgbLight(board: Board): void {
   board.pinMode(red, Pin.OUTPUT);
   board.pinMode(green, Pin.OUTPUT);
   board.pinMode(blue, Pin.OUTPUT);
 
-  const loopTimer = 6000;
+  const loopTimer = 1500;
   const averageTime = loopTimer / RGB.length;
-  board.loop(loopTimer, async function () {
+  board.loop(loopTimer, async (): Promise<void> => {
     board.digitalWrite(red, 255);
     board.digitalWrite(green, 0);
     board.digitalWrite(blue, 0);
 
-    board.wait(averageTime, () => {
+    board.wait(averageTime, (): void => {
       board.digitalWrite(red, 0);
       board.digitalWrite(green, 255);
       board.digitalWrite(blue, 0);
 
-      board.wait(averageTime, () => {
+      board.wait(averageTime, (): void => {
         board.digitalWrite(red, 0);
         board.digitalWrite(green, 0);
         board.digitalWrite(blue, 255);
