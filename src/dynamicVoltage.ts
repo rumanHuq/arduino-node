@@ -1,5 +1,5 @@
 import { Board } from "johnny-five";
-import { Pin } from "./main";
+import Pin from "./constructors/Pin";
 
 /**
  * @description

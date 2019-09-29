@@ -1,7 +1,7 @@
 import { Board } from "johnny-five";
-import { Pin } from "./main";
+import Pin from "./constructors/Pin";
 
-const RGB = [10, 12, 11];
+const RGB = [8, 9, 10];
 const [red, green, blue] = RGB;
 
 /**

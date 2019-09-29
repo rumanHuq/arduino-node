@@ -103,6 +103,6 @@
     "@typescript-eslint/semi": [
       "error"
     ],
-    "no-throw-literal": 0
+    "@typescript-eslint/ban-ts-ignore": 0
   }
 }
