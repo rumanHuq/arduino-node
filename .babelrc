@@ -10,9 +10,10 @@
     ]
   ],
   "plugins": [
-    "@babel/transform-typescript",
     "dynamic-import-node",
+    "@babel/transform-typescript",
     "@babel/syntax-dynamic-import",
+    "@babel/plugin-proposal-class-properties",
     [
       "@babel/transform-runtime",
       {

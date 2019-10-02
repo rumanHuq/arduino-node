@@ -1,27 +1,26 @@
 import { Led } from "johnny-five";
 import Sensor from "./constructors/Sensor";
 
-const RGB = [8, 9, 10];
-const [red, green, blue] = RGB;
-
 /**
  * @description PhotoResistor in action
  * @export default
  */
 export default function initSensor(): void {
+  const RGB = [8, 9, 10];
+  const [red, green, blue] = RGB;
   const sensor = new Sensor({ pin: "A0", threshold: 5 });
+  // @ts-ignore
   const led = new Led.RGB({ pins: { red, green, blue } });
-  led.off();
 
   sensor.on("data", (v: number) => {
     const photoResistorValue = (5 * v) / 1023;
     led.off();
-    if (photoResistorValue <= 1) {
-      led.color("#FF0000");
-    } else if (photoResistorValue > 1 && photoResistorValue <= 4) {
-      led.color("#00FF00");
-    } else if (photoResistorValue > 4) {
-      led.color("#0000FF");
+    if (photoResistorValue <= 1.8) {
+      led.color("red");
+    } else if (photoResistorValue > 3) {
+      led.color("green");
+    } else if (photoResistorValue > 1.8 && photoResistorValue <= 3) {
+      led.color("blue");
     }
     led.on();
   });
