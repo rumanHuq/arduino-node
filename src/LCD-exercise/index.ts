@@ -1,4 +1,4 @@
-import { Button, LCD } from "johnny-five";
+import { Button, LCD, Led } from "johnny-five";
 
 /**
  * @description LCD-timer
@@ -11,11 +11,12 @@ export default function lcdDisplay(): void {
 
   const stopWatch = {
     lcd: new LCD({ pins: [2, 3, 4, 5, 6, 7] }),
+    led: new Led({ pin: 9 }),
     interval: undefined as unknown as NodeJS.Timeout,
     paused: true,
     SECOND: 1000,
     MINUTE: 60 * 1000,
-    timer: 0.5 * (60 * 1000),
+    timer: 0.2 * (60 * 1000),
     limit: 2 * (60 * 1000),
     addSecond(): void {
       this.timer = this.timer + this.SECOND;
@@ -25,9 +26,8 @@ export default function lcdDisplay(): void {
       this.renderInLcd();
     },
     removeSecond(): void {
-      this.timer = this.timer - this.SECOND;
+      this.timer = this.timer && this.timer - this.SECOND;
       if (this.timer <= 0) {
-        this.timer = 0;
         this.timeOver();
         if (this.interval) clearInterval(this.interval);
       }
@@ -43,6 +43,7 @@ export default function lcdDisplay(): void {
         clearInterval(this.interval);
         // @ts-ignore
         this.interval = undefined;
+        this.led.fadeOut(300);
         this.renderInLcd();
       }
     },
@@ -66,6 +67,7 @@ export default function lcdDisplay(): void {
     timeOver(): void {
       this.lcd.clear();
       this.lcd.cursor(1, 0).print("done!");
+      this.led.blink();
     },
   };
 
