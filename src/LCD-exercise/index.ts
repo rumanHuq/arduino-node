@@ -1,4 +1,4 @@
-import { Button, LCD, Led } from "johnny-five";
+import { Button, LCD, Led, Piezo } from "johnny-five";
 
 /**
  * @description LCD-timer
@@ -11,7 +11,8 @@ export default function lcdDisplay(): void {
 
   const stopWatch = {
     lcd: new LCD({ pins: [2, 3, 4, 5, 6, 7] }),
-    led: new Led({ pin: 9 }),
+    led: new Led({ pin: 8 }),
+    piezo: new Piezo({ pin: 9 }),
     interval: undefined as unknown as NodeJS.Timeout,
     paused: true,
     SECOND: 1000,
@@ -27,11 +28,11 @@ export default function lcdDisplay(): void {
     },
     removeSecond(): void {
       this.timer = this.timer && this.timer - this.SECOND;
-      if (this.timer <= 0) {
-        this.timeOver();
-        if (this.interval) clearInterval(this.interval);
-      }
       this.renderInLcd();
+      if (this.timer <= 0) {
+        if (this.interval) clearInterval(this.interval);
+        this.timeOver();
+      }
     },
     togglePauseState(): void {
       this.paused = !this.paused;
@@ -41,9 +42,7 @@ export default function lcdDisplay(): void {
         }, this.SECOND);
       } else {
         clearInterval(this.interval);
-        // @ts-ignore
-        this.interval = undefined;
-        this.led.fadeOut(300);
+        (this as unknown as {interval: undefined}).interval = undefined;
         this.renderInLcd();
       }
     },
@@ -62,12 +61,41 @@ export default function lcdDisplay(): void {
       this.lcd.cursor(1, 0).print("max is 3 minutes");
     },
     init(): void {
+      this.timer = 0.2 * (60 * 1000);
       this.renderInLcd();
+      this.led.off();
     },
     timeOver(): void {
       this.lcd.clear();
       this.lcd.cursor(1, 0).print("done!");
-      this.led.blink();
+      this.led.on();
+      this.piezo.play({
+        song: [
+          ["C4", 1 / 4],
+          ["D4", 1 / 4],
+          ["F4", 1 / 4],
+          ["D4", 1 / 4],
+          ["A4", 1 / 4],
+          [null, 1 / 4],
+          ["A4", 1],
+          ["G4", 1],
+          [null, 1 / 2],
+          ["C4", 1 / 4],
+          ["D4", 1 / 4],
+          ["F4", 1 / 4],
+          ["D4", 1 / 4],
+          ["G4", 1 / 4],
+          [null, 1 / 4],
+          ["G4", 1],
+          ["F4", 1],
+          [null, 1 / 2],
+        ],
+        tempo: 100,
+      });
+
+      setTimeout(() => {
+        this.init();
+      }, 5000);
     },
   };
 
@@ -83,5 +111,3 @@ export default function lcdDisplay(): void {
     stopWatch.togglePauseState();
   });
 }
-
-// setInterval(1000)
